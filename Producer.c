@@ -1,18 +1,16 @@
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
+#include Producer.h
 
 void producer(void){
-    FILE *mydata = fopen(MYDATA.txt, "rt");
+    FILE *mydata = fopen("mydata.txt", "rt");
     FILE *turn = NULL;
     int c;
     //the while loop goes forever until
     //we reach the end of file which causes the break
     while (1) {
         //will wait forever until turn can be read
-        while((turn=fopen("TURN.txt",r))==NULL);
+        while((turn=fopen("TURN.txt","rt"))==NULL);
         //if its producer's turn continue
-        if(fgetc(turn)==1){
+        if(fgetc(turn)==0){
             //scenario 1: it is producer's turn: must close turn
             fclose(turn);
             c = fgetc(mydata);
