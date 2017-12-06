@@ -1,7 +1,9 @@
 #ifndef SHARED_LIBS
+    #define SHARED_LIBS
     #include <stdio.h>
     #include <stdlib.h>
     #include <unistd.h>
+    #include<sys/wait.h>
 #endif
 
 #ifndef CONS_HEAD
@@ -27,12 +29,13 @@ int main() {
 
     switch( pidCons = fork() ) {
         case 0: /* This would be the consumer */
+            puts("starting consumer");
             consumer();
             break;
 
         case -1: /* An error with forking to create the consumer process */
             printf("Something went wrong with the consumer");
-            prerror("fork_cons");
+            perror("fork_cons");
             exit(1);
             break;
 
@@ -44,14 +47,14 @@ int main() {
 
                 case -1: /* An error with forking to create the producer process */
                     printf("Something went wrong with the producer");
-                    prerror("fork_prod");
+                    perror("fork_prod");
                     exit(1);
                     break;
 
 
                 default:
                     /* The parent waits for the producer to finish, then it terminates (killing the consumer) */
-                    waitpid(pidProd); // pid_t waitpid (child_pid, &status, options);
+                    wait(NULL); // pid_t waitpid (child_pid, &status, options);
                     // Use wait() instead?
             }
     }

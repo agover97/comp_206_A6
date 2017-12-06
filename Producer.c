@@ -1,4 +1,4 @@
-#include Producer.h
+#include "Producer.h"
 
 void producer(void){
     FILE *mydata = fopen("mydata.txt", "rt");
@@ -8,22 +8,30 @@ void producer(void){
     //we reach the end of file which causes the break
     while (1) {
         //will wait forever until turn can be read
-        while((turn=fopen("TURN.txt","rt"))==NULL);
+        while((turn=fopen("TURN.txt","r+"))==NULL);
         //if its producer's turn continue
-        if(fgetc(turn)==0){
+        if(fgetc(turn) == '0'){
             //scenario 1: it is producer's turn: must close turn
-            fclose(turn);
+            //fclose(turn);
             c = fgetc(mydata);
             if (feof(mydata)) {
+                // change to a 1
+                fseek(turn, 0, SEEK_SET);
+                fputc('1', turn);
+                fclose(turn);
+                // write the eof for consumer
+                FILE *data = fopen("DATA.txt", "wt");
+                fprintf(data, "%c",c);
+                fclose(data);
                 break;
             }
             FILE *data = fopen("DATA.txt", "wt");
             fprintf(data, "%c",c);
             fclose(data);
             //now its the consumer's turn
-            FILE *newTurn = fopen("TURN.txt", "wt");
-            fputc('1', newTurn);
-            fclose(newTurn);
+            fseek(turn, 0, SEEK_SET);
+            fputc('1', turn);
+            fclose(turn);
         }
         //scenario 2: not proudcers turn, but still must close turn
         //this is because in order for it to eventually become

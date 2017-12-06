@@ -1,20 +1,12 @@
-program : backup cleanup main.o main.h consumer.o consumer.h producer.o producer.h
-	gcc -o program main.o consumer.o producer.o
+program : Consumer.o Producer.o Main.o 
+	gcc -o program Consumer.o Producer.o Main.o;
+	chmod 700 program
 
-main.o : main.c main.h
-	gcc -c main.c
+Main.o : Main.c
+	gcc -c Main.c
 
-consumer.o : consumer.c consumer.h
-	gcc -c consumer.c
+Consumer.o : Consumer.c
+	gcc -c Consumer.c
 
-producer.o : producer.c producer.h
-	gcc -c producer.c
-
-backup : 
-	cp main.c consumer.c producer.c main.h consumer.h producer.h makefile ./backup
-
-cleanup : 
-	rm -f main.o consumer.o producer.o
-
-debug : 
-	gcc -o -g -pg program main.o consumer.o producer.o
+Producer.o : Producer.c
+	gcc -c Producer.c
